@@ -79,6 +79,19 @@ header img {
   max-height: 92vh;
 }
 
+/* CLOSE X */
+.lightbox .close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  font-size: 44px;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1;
+  user-select: none;
+}
+
+/* NAV ARROWS */
 .lightbox .nav {
   position: absolute;
   top: 50%;
@@ -198,6 +211,7 @@ footer {
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
+  <div class="close" id="closeLightbox">&times;</div>
   <div class="nav prev">&#10094;</div>
   <img id="lightbox-img">
   <div class="nav next">&#10095;</div>
@@ -231,6 +245,7 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 const prevBtn = document.querySelector('.prev');
 const nextBtn = document.querySelector('.next');
+const closeBtn = document.getElementById('closeLightbox');
 const infoModal = document.getElementById('infoModal');
 const openInfo = document.getElementById('openInfo');
 
@@ -290,9 +305,18 @@ function prev() {
 
 nextBtn.onclick = next;
 prevBtn.onclick = prev;
+closeBtn.onclick = closeLightbox;
 
 lightbox.onclick = e => e.target === lightbox && closeLightbox();
 
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
+});
+
+/* swipe */
 let startX = 0;
 lightbox.addEventListener('touchstart', e => startX = e.touches[0].clientX);
 lightbox.addEventListener('touchend', e => {
@@ -301,6 +325,7 @@ lightbox.addEventListener('touchend', e => {
   if (dx > 50) prev();
 });
 
+/* info modal */
 openInfo.onclick = () => infoModal.classList.add('active');
 infoModal.onclick = e => e.target === infoModal && infoModal.classList.remove('active');
 </script>
