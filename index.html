@@ -19,12 +19,11 @@ body {
 
 /* header */
 header {
-  text-align: center;
-  padding: 40px 20px;
+  padding: 30px 20px;
 }
 
 header img {
-  max-width: 260px;
+  max-width: 235px;
 }
 
 /* intro */
@@ -46,15 +45,9 @@ header img {
   padding: 0 20px;
 }
 
-@media (max-width: 1200px) {
-  .gallery { column-count: 3; }
-}
-@media (max-width: 800px) {
-  .gallery { column-count: 2; }
-}
-@media (max-width: 500px) {
-  .gallery { column-count: 1; }
-}
+@media (max-width: 1200px) { .gallery { column-count: 3; } }
+@media (max-width: 800px) { .gallery { column-count: 2; } }
+@media (max-width: 500px) { .gallery { column-count: 1; } }
 
 .gallery img {
   width: 100%;
@@ -74,9 +67,7 @@ header img {
   z-index: 9999;
 }
 
-.lightbox.active {
-  display: flex;
-}
+.lightbox.active { display: flex; }
 
 .lightbox img {
   max-width: 92vw;
@@ -98,11 +89,53 @@ header img {
 .lightbox .prev { left: 0; }
 .lightbox .next { right: 0; }
 
+/* footer */
 footer {
   text-align: center;
   padding: 50px 20px 70px;
-  font-size: 14px;
-  color: #666;
+  font-size: 16px;
+}
+
+footer a {
+  color: #111;
+  text-decoration: none;
+  border-bottom: 2px solid #111;
+  cursor: pointer;
+}
+
+/* info modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.modal.active { display: flex; }
+
+.modal-content {
+  background: #fff;
+  max-width: 520px;
+  padding: 30px;
+  text-align: center;
+}
+
+.modal-content img {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.modal-content p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.modal-content a {
+  color: #111;
+  text-decoration: underline;
 }
 </style>
 </head>
@@ -116,21 +149,38 @@ footer {
 <section class="intro">
   <p>
     I make small batch ceramics and commissioned items.
-    Please <a href="mailto:summerfrances@gmail.com">contact me</a> for inquiries.
+    Please feel free to browse the gallery below.
   </p>
 </section>
 
 <section class="gallery" id="gallery"></section>
 
 <footer>
-  © Summer Frances
+  <a id="openInfo">Info &amp; Contact</a>
 </footer>
 
-<!-- lightbox -->
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <div class="nav prev">&#10094;</div>
   <img id="lightbox-img">
   <div class="nav next">&#10095;</div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="modal" id="infoModal">
+  <div class="modal-content">
+    <img src="https://raw.githubusercontent.com/talllabs/sf/main/about.jpg" alt="Summer">
+    <p><strong>Kia Ora, I’m Summer.</strong></p>
+    <p>
+      I would feel honored to hear from you, regarding your ceramic hopes and dreams
+      or how I might assist with your photography wishes.
+      <br><br>
+      Please do feel free to
+      <a href="mailto:summer@example.com?subject=I%20am%20interested%20in%20purchasing%20your%20pottery">
+        contact me by clicking here
+      </a>.
+    </p>
+  </div>
 </div>
 
 <script>
@@ -139,10 +189,12 @@ const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 const prevBtn = document.querySelector('.prev');
 const nextBtn = document.querySelector('.next');
+const infoModal = document.getElementById('infoModal');
+const openInfo = document.getElementById('openInfo');
 
 const BASE = 'https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com';
 const EXT = ['jpg','jpeg','png'];
-const MAX = 150;
+const MAX = 64;
 
 let images = [];
 let current = 0;
@@ -150,47 +202,54 @@ let current = 0;
 // build gallery
 for (let i = 1; i <= MAX; i++) {
   const num = String(i).padStart(3,'0');
-
   EXT.forEach(ext => {
     const src = `${BASE}${num}.${ext}`;
     const img = document.createElement('img');
     img.src = src;
     img.loading = 'lazy';
-
     img.onerror = () => img.remove();
-
     img.onload = () => {
       const index = images.push(src) - 1;
-      img.addEventListener('click', () => openLightbox(index));
+      img.onclick = () => openLightbox(index);
     };
-
     gallery.appendChild(img);
+  });
+}
+
+function preload(index) {
+  [index+1, index-1].forEach(i => {
+    if (images[i]) {
+      const img = new Image();
+      img.src = images[i];
+    }
   });
 }
 
 function openLightbox(index) {
   current = index;
   lightboxImg.src = images[current];
+  preload(current);
   lightbox.classList.add('active');
 }
 
 function closeLightbox() {
   lightbox.classList.remove('active');
-  lightboxImg.src = '';
 }
 
-function showNext() {
+function next() {
   current = (current + 1) % images.length;
   lightboxImg.src = images[current];
+  preload(current);
 }
 
-function showPrev() {
+function prev() {
   current = (current - 1 + images.length) % images.length;
   lightboxImg.src = images[current];
+  preload(current);
 }
 
-nextBtn.onclick = showNext;
-prevBtn.onclick = showPrev;
+nextBtn.onclick = next;
+prevBtn.onclick = prev;
 
 lightbox.onclick = e => {
   if (e.target === lightbox) closeLightbox();
@@ -199,9 +258,24 @@ lightbox.onclick = e => {
 document.addEventListener('keydown', e => {
   if (!lightbox.classList.contains('active')) return;
   if (e.key === 'Escape') closeLightbox();
-  if (e.key === 'ArrowRight') showNext();
-  if (e.key === 'ArrowLeft') showPrev();
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
 });
+
+// swipe gestures
+let startX = 0;
+lightbox.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+lightbox.addEventListener('touchend', e => {
+  const endX = e.changedTouches[0].clientX;
+  if (endX < startX - 50) next();
+  if (endX > startX + 50) prev();
+});
+
+// info modal
+openInfo.onclick = () => infoModal.classList.add('active');
+infoModal.onclick = e => {
+  if (e.target === infoModal) infoModal.classList.remove('active');
+};
 </script>
 
 </body>
