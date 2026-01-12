@@ -92,7 +92,6 @@ header img {
   font-size: 44px;
   color: #fff;
   cursor: pointer;
-  line-height: 1;
 }
 
 .lightbox .nav {
@@ -146,14 +145,12 @@ footer {
   position: relative;
 }
 
-/* MODAL CLOSE X */
 .modal-close {
   position: absolute;
   top: 14px;
   right: 18px;
   font-size: 32px;
   cursor: pointer;
-  line-height: 1;
 }
 
 .modal-grid {
@@ -278,12 +275,12 @@ function addImage(src) {
   gallery.appendChild(img);
 }
 
-/* Ceramics */
+/* Ceramics 001–064 */
 for (let i = 1; i <= 64; i++) {
   addImage(`https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com${String(i).padStart(3,'0')}.jpg`);
 }
 
-/* Avail */
+/* Avail 01–13 */
 for (let i = 1; i <= 13; i++) {
   addImage(`https://raw.githubusercontent.com/talllabs/sf/main/Avail-SummerFrances.com${String(i).padStart(2,'0')}.jpg`);
 }
