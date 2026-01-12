@@ -17,6 +17,7 @@ body {
   color: #111;
 }
 
+/* header */
 header {
   text-align: center;
   padding: 40px 20px;
@@ -26,6 +27,7 @@ header img {
   max-width: 260px;
 }
 
+/* intro */
 .intro {
   max-width: 720px;
   margin: 40px auto;
@@ -35,24 +37,33 @@ header img {
   line-height: 1.6;
 }
 
+/* masonry gallery */
 .gallery {
+  column-count: 4;
+  column-gap: 22px;
   max-width: 1600px;
   margin: 60px auto;
   padding: 0 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 22px;
+}
+
+@media (max-width: 1200px) {
+  .gallery { column-count: 3; }
+}
+@media (max-width: 800px) {
+  .gallery { column-count: 2; }
+}
+@media (max-width: 500px) {
+  .gallery { column-count: 1; }
 }
 
 .gallery img {
   width: 100%;
-  height: 380px;
-  object-fit: cover;
+  margin-bottom: 22px;
+  display: block;
   cursor: pointer;
-  background: #f3f3f3;
 }
 
-/* LIGHTBOX */
+/* lightbox */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -63,13 +74,35 @@ header img {
   z-index: 9999;
 }
 
-.lightbox img {
-  max-width: 94vw;
-  max-height: 94vh;
-}
-
 .lightbox.active {
   display: flex;
+}
+
+.lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+}
+
+/* nav arrows */
+.lightbox .nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  padding: 20px;
+}
+
+.lightbox .prev { left: 0; }
+.lightbox .next { right: 0; }
+
+footer {
+  text-align: center;
+  padding: 50px 20px 70px;
+  font-size: 14px;
+  color: #666;
 }
 </style>
 </head>
@@ -89,44 +122,86 @@ header img {
 
 <section class="gallery" id="gallery"></section>
 
+<footer>
+  © Summer Frances
+</footer>
+
+<!-- lightbox -->
 <div class="lightbox" id="lightbox">
-  <img id="lightbox-img" src="">
+  <div class="nav prev">&#10094;</div>
+  <img id="lightbox-img">
+  <div class="nav next">&#10095;</div>
 </div>
 
 <script>
 const gallery = document.getElementById('gallery');
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
+const prevBtn = document.querySelector('.prev');
+const nextBtn = document.querySelector('.next');
 
 const BASE = 'https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com';
-const EXTENSIONS = ['jpg','jpeg','png'];
-const MAX = 150; // covers your ~115 images safely
+const EXT = ['jpg','jpeg','png'];
+const MAX = 150;
 
+let images = [];
+let current = 0;
+
+// build gallery
 for (let i = 1; i <= MAX; i++) {
-  const num = String(i).padStart(3, '0');
+  const num = String(i).padStart(3,'0');
 
-  EXTENSIONS.forEach(ext => {
+  EXT.forEach(ext => {
     const src = `${BASE}${num}.${ext}`;
-
     const img = document.createElement('img');
     img.src = src;
     img.loading = 'lazy';
 
-    img.onerror = () => img.remove(); // hide missing files
+    img.onerror = () => img.remove();
 
-    img.onclick = () => {
-      lightboxImg.src = src;
-      lightbox.classList.add('active');
+    img.onload = () => {
+      const index = images.push(src) - 1;
+      img.addEventListener('click', () => openLightbox(index));
     };
 
     gallery.appendChild(img);
   });
 }
 
-lightbox.onclick = () => {
+function openLightbox(index) {
+  current = index;
+  lightboxImg.src = images[current];
+  lightbox.classList.add('active');
+}
+
+function closeLightbox() {
   lightbox.classList.remove('active');
   lightboxImg.src = '';
+}
+
+function showNext() {
+  current = (current + 1) % images.length;
+  lightboxImg.src = images[current];
+}
+
+function showPrev() {
+  current = (current - 1 + images.length) % images.length;
+  lightboxImg.src = images[current];
+}
+
+nextBtn.onclick = showNext;
+prevBtn.onclick = showPrev;
+
+lightbox.onclick = e => {
+  if (e.target === lightbox) closeLightbox();
 };
+
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') showNext();
+  if (e.key === 'ArrowLeft') showPrev();
+});
 </script>
 
 </body>
