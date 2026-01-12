@@ -43,18 +43,29 @@
       text-decoration: underline;
     }
 
+    /* gallery */
     .gallery {
-      max-width: 1500px;
+      max-width: 1600px;
       margin: 60px auto;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 22px;
+    }
+
+    /* editorial crop */
+    .gallery figure {
+      margin: 0;
+      height: 380px;
+      overflow: hidden;
+      background: #f5f5f5;
+      cursor: pointer;
     }
 
     .gallery img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       display: block;
     }
 
@@ -63,6 +74,26 @@
       padding: 50px 20px 70px;
       font-size: 14px;
       color: #666;
+    }
+
+    /* lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 94vw;
+      max-height: 94vh;
     }
   </style>
 </head>
@@ -90,20 +121,59 @@
   </p>
 </section>
 
-<section class="gallery">
-
-  <img src="https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com002.jpg" alt="">
-  <img src="https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com003.jpg" alt="">
-  <img src="https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com004.jpg" alt="">
-  <img src="https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com005.jpg" alt="">
-  <img src="https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com006.jpeg" alt="">
-  <img src="https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com007.jpg" alt="">
-
-</section>
+<section class="gallery" id="gallery"></section>
 
 <footer>
   © Summer Frances
 </footer>
+
+<!-- lightbox -->
+<div class="lightbox" id="lightbox">
+  <img src="" alt="">
+</div>
+
+<script>
+  const gallery = document.getElementById('gallery');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+
+  const base =
+    'https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com';
+
+  const extensions = ['jpg', 'jpeg', 'png'];
+  const MAX_IMAGES = 150; // safe upper bound (covers 1–115+)
+
+  for (let i = 1; i <= MAX_IMAGES; i++) {
+    const num = String(i).padStart(3, '0');
+
+    extensions.forEach(ext => {
+      const src = `${base}${num}.${ext}`;
+
+      const img = new Image();
+      img.loading = 'lazy';
+      img.src = src;
+
+      img.onload = () => {
+        const fig = document.createElement('figure');
+        fig.appendChild(img);
+        gallery.appendChild(fig);
+
+        fig.addEventListener('click', () => {
+          lightboxImg.src = src;
+          lightbox.classList.add('active');
+        });
+      };
+
+      // silently ignore missing files
+      img.onerror = () => {};
+    });
+  }
+
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active');
+    lightboxImg.src = '';
+  });
+</script>
 
 </body>
 </html>
