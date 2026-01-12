@@ -17,18 +17,18 @@ body {
   color: #111;
 }
 
-/* header */
+/* HEADER */
 header {
   padding: 30px 20px;
 }
 
 header img {
-  max-width: 235px;
+  max-width: 210px;
 }
 
-/* intro */
+/* INTRO */
 .intro {
-  max-width: 720px;
+  max-width: 760px;
   margin: 60px auto;
   padding: 0 20px;
   text-align: center;
@@ -41,7 +41,7 @@ header img {
   text-decoration: underline;
 }
 
-/* masonry gallery */
+/* GALLERY */
 .gallery {
   column-count: 4;
   column-gap: 22px;
@@ -61,7 +61,7 @@ header img {
   cursor: pointer;
 }
 
-/* lightbox */
+/* LIGHTBOX */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -79,7 +79,6 @@ header img {
   max-height: 92vh;
 }
 
-/* nav arrows */
 .lightbox .nav {
   position: absolute;
   top: 50%;
@@ -87,33 +86,31 @@ header img {
   font-size: 40px;
   color: #fff;
   cursor: pointer;
-  user-select: none;
   padding: 20px;
+  user-select: none;
 }
 
 .lightbox .prev { left: 0; }
 .lightbox .next { right: 0; }
 
-/* footer */
+/* FOOTER */
 footer {
   text-align: center;
-  padding: 60px 20px 80px;
-  font-size: 16px;
+  padding: 70px 20px 90px;
 }
 
-footer .footer-icons {
-  margin-top: 20px;
+.footer-icons {
+  margin-top: 22px;
   display: flex;
   justify-content: center;
   gap: 22px;
 }
 
-footer img.icon {
+.footer-icons img {
   width: 22px;
-  height: auto;
 }
 
-/* info modal */
+/* MODAL */
 .modal {
   position: fixed;
   inset: 0;
@@ -188,15 +185,13 @@ footer img.icon {
 
   <div class="footer-icons">
     <a href="https://www.instagram.com/_summerfrances/" target="_blank">
-      <img class="icon" src="https://static.vecteezy.com/system/resources/thumbnails/023/986/885/small/instagram-logo-instagram-logo-transparent-instagram-icon-transparent-free-free-png.png" alt="Instagram">
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/023/986/885/small/instagram-logo-instagram-logo-transparent-instagram-icon-transparent-free-free-png.png">
     </a>
-
     <a href="https://www.pinterest.com/summerfrances/_saved/" target="_blank">
-      <img class="icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUBe4DYrA6XsbuqDyIkHjquWliXxECybqPgQ&s" alt="Pinterest">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUBe4DYrA6XsbuqDyIkHjquWliXxECybqPgQ&s">
     </a>
-
     <a href="mailto:summerfrances@gmail.com">
-      <img class="icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQph1lX3yWMBqCGuxV-esR-LkE39DiO_sr1g&s" alt="Email">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQph1lX3yWMBqCGuxV-esR-LkE39DiO_sr1g&s">
     </a>
   </div>
 </footer>
@@ -212,7 +207,7 @@ footer img.icon {
 <div class="modal" id="infoModal">
   <div class="modal-content">
     <div class="modal-grid">
-      <img src="https://raw.githubusercontent.com/talllabs/sf/main/About.webp" alt="Summer Frances">
+      <img src="https://raw.githubusercontent.com/talllabs/sf/main/About.webp">
       <div>
         <p><strong>Kia Ora, I’m Summer.</strong></p>
         <p>
@@ -239,37 +234,39 @@ const nextBtn = document.querySelector('.next');
 const infoModal = document.getElementById('infoModal');
 const openInfo = document.getElementById('openInfo');
 
-const BASE = 'https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com';
-const EXT = ['jpg','jpeg','png'];
-const MAX = 64;
-
 let images = [];
 let current = 0;
 
-for (let i = 1; i <= MAX; i++) {
-  const num = String(i).padStart(3,'0');
-  EXT.forEach(ext => {
-    const src = `${BASE}${num}.${ext}`;
-    const img = document.createElement('img');
-    img.src = src;
-    img.loading = 'lazy';
-    img.onerror = () => img.remove();
-    img.onload = () => {
-      const index = images.push(src) - 1;
-      img.onclick = () => openLightbox(index);
-    };
-    gallery.appendChild(img);
-  });
+function addImage(src) {
+  const img = document.createElement('img');
+  img.src = src;
+  img.loading = 'lazy';
+  img.onerror = () => img.remove();
+  img.onload = () => {
+    const index = images.push(src) - 1;
+    img.onclick = () => openLightbox(index);
+  };
+  gallery.appendChild(img);
 }
 
-function preload(index) {
-  [index+1, index-1].forEach(i => {
-    if (images[i]) new Image().src = images[i];
-  });
+/* Ceramics 001–064 */
+for (let i = 1; i <= 64; i++) {
+  const n = String(i).padStart(3, '0');
+  addImage(`https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com${n}.jpg`);
 }
 
-function openLightbox(index) {
-  current = index;
+/* Avail 01–13 */
+for (let i = 1; i <= 13; i++) {
+  const n = String(i).padStart(2, '0');
+  addImage(`https://raw.githubusercontent.com/talllabs/sf/main/Avail-SummerFrances.com${n}.jpg`);
+}
+
+function preload(i) {
+  [i+1, i-1].forEach(x => images[x] && (new Image().src = images[x]));
+}
+
+function openLightbox(i) {
+  current = i;
   lightboxImg.src = images[current];
   preload(current);
   lightbox.classList.add('active');
@@ -291,17 +288,21 @@ function prev() {
   preload(current);
 }
 
-prevBtn.onclick = prev;
 nextBtn.onclick = next;
+prevBtn.onclick = prev;
 
-lightbox.onclick = e => {
-  if (e.target === lightbox) closeLightbox();
-};
+lightbox.onclick = e => e.target === lightbox && closeLightbox();
+
+let startX = 0;
+lightbox.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+lightbox.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - startX;
+  if (dx < -50) next();
+  if (dx > 50) prev();
+});
 
 openInfo.onclick = () => infoModal.classList.add('active');
-infoModal.onclick = e => {
-  if (e.target === infoModal) infoModal.classList.remove('active');
-};
+infoModal.onclick = e => e.target === infoModal && infoModal.classList.remove('active');
 </script>
 
 </body>
