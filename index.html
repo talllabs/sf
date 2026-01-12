@@ -29,7 +29,7 @@ header img {
 /* intro */
 .intro {
   max-width: 720px;
-  margin: 40px auto;
+  margin: 60px auto;
   padding: 0 20px;
   text-align: center;
   font-size: 18px;
@@ -97,28 +97,20 @@ header img {
 /* footer */
 footer {
   text-align: center;
-  padding: 50px 20px 70px;
+  padding: 60px 20px 80px;
   font-size: 16px;
 }
 
-.footer-links {
-  margin-top: 18px;
+footer .footer-icons {
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   gap: 22px;
-  align-items: center;
 }
 
-.footer-links a {
-  color: #111;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.footer-links svg {
+footer img.icon {
   width: 22px;
-  height: 22px;
-  fill: #111;
+  height: auto;
 }
 
 /* info modal */
@@ -150,7 +142,6 @@ footer {
 
 .modal-grid img {
   width: 100%;
-  height: auto;
 }
 
 .modal-grid p {
@@ -191,17 +182,127 @@ footer {
 <section class="gallery" id="gallery"></section>
 
 <footer>
-  <a id="openInfo">Info &amp; Contact</a>
+  <div id="openInfo" style="cursor:pointer; text-decoration:underline;">
+    Info &amp; Contact
+  </div>
 
-  <div class="footer-links">
-    <!-- Instagram -->
-    <a href="https://www.instagram.com/_summerfrances/" target="_blank" aria-label="Instagram">
-      <svg viewBox="0 0 24 24">
-        <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3.5A4.5 4.5 0 1 0 12 17a4.5 4.5 0 0 0 0-9zm0 7A2.5 2.5 0 1 1 12 10a2.5 2.5 0 0 1 0 5zm4.75-7.88a1.06 1.06 0 1 0 0-2.12 1.06 1.06 0 0 0 0 2.12z"/>
-      </svg>
+  <div class="footer-icons">
+    <a href="https://www.instagram.com/_summerfrances/" target="_blank">
+      <img class="icon" src="https://static.vecteezy.com/system/resources/thumbnails/023/986/885/small/instagram-logo-instagram-logo-transparent-instagram-icon-transparent-free-free-png.png" alt="Instagram">
     </a>
 
-    <!-- Pinterest -->
-    <a href="https://www.pinterest.com/summerfrances/_saved/" target="_blank" aria-label="Pinterest">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12c0 4.14 2.69 7.63 6.43 8.86-.09-.75-.17-1.9.04-2.72.19-.82 1.23-5.23 1.23-5.23s-.31-.63-.31-1.56c0-1.46.85-2.55 1.9-2.55.9 0 1.34.67 1.34 1.48 0 .9-.57 2.24-.86 3.49-.25 1.05.53 1.91 1.57 1.91 1.88 0 3.33-1.98 3.33-4.84 0-2.53-1.82-4.3-4.43-4.3-3.02 0-4.79 2.27-4.79 4.61 0 .91.35 1.89.79 2.42.09.11.1.21.08.32-.09.35-.28 1.12-.32 1.28-.05.21-.17.26-.39.16-1.45-.67-2.36-2.77-2.36-4.46 0-3.63 2.64-6.97 7.61-6.97 3.99 0 7.09 2.85 7.09 6.66 0 3.97-2.5 7.16-5.97 7.16-1.17 0-2.27-.61-2.65-1.33l-.72 2.74c-.26 1.01-.97 2.28-1.4
+    <a href="https://www.pinterest.com/summerfrances/_saved/" target="_blank">
+      <img class="icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUBe4DYrA6XsbuqDyIkHjquWliXxECybqPgQ&s" alt="Pinterest">
+    </a>
+
+    <a href="mailto:summerfrances@gmail.com">
+      <img class="icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQph1lX3yWMBqCGuxV-esR-LkE39DiO_sr1g&s" alt="Email">
+    </a>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="nav prev">&#10094;</div>
+  <img id="lightbox-img">
+  <div class="nav next">&#10095;</div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="modal" id="infoModal">
+  <div class="modal-content">
+    <div class="modal-grid">
+      <img src="https://raw.githubusercontent.com/talllabs/sf/main/About.webp" alt="Summer Frances">
+      <div>
+        <p><strong>Kia Ora, I’m Summer.</strong></p>
+        <p>
+          I would feel honored to hear from you, regarding your ceramic hopes and dreams
+          or how I might assist with your photography wishes.
+        </p>
+        <p>
+          Please do feel free to
+          <a href="mailto:summerfrances@gmail.com">
+            contact me by clicking here
+          </a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const gallery = document.getElementById('gallery');
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const prevBtn = document.querySelector('.prev');
+const nextBtn = document.querySelector('.next');
+const infoModal = document.getElementById('infoModal');
+const openInfo = document.getElementById('openInfo');
+
+const BASE = 'https://raw.githubusercontent.com/talllabs/sf/main/Ceramics-SummerFrances.com';
+const EXT = ['jpg','jpeg','png'];
+const MAX = 64;
+
+let images = [];
+let current = 0;
+
+for (let i = 1; i <= MAX; i++) {
+  const num = String(i).padStart(3,'0');
+  EXT.forEach(ext => {
+    const src = `${BASE}${num}.${ext}`;
+    const img = document.createElement('img');
+    img.src = src;
+    img.loading = 'lazy';
+    img.onerror = () => img.remove();
+    img.onload = () => {
+      const index = images.push(src) - 1;
+      img.onclick = () => openLightbox(index);
+    };
+    gallery.appendChild(img);
+  });
+}
+
+function preload(index) {
+  [index+1, index-1].forEach(i => {
+    if (images[i]) new Image().src = images[i];
+  });
+}
+
+function openLightbox(index) {
+  current = index;
+  lightboxImg.src = images[current];
+  preload(current);
+  lightbox.classList.add('active');
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+}
+
+function next() {
+  current = (current + 1) % images.length;
+  lightboxImg.src = images[current];
+  preload(current);
+}
+
+function prev() {
+  current = (current - 1 + images.length) % images.length;
+  lightboxImg.src = images[current];
+  preload(current);
+}
+
+prevBtn.onclick = prev;
+nextBtn.onclick = next;
+
+lightbox.onclick = e => {
+  if (e.target === lightbox) closeLightbox();
+};
+
+openInfo.onclick = () => infoModal.classList.add('active');
+infoModal.onclick = e => {
+  if (e.target === infoModal) infoModal.classList.remove('active');
+};
+</script>
+
+</body>
+</html>
